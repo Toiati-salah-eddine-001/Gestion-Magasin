@@ -7,8 +7,6 @@
     import { Barcode, Trash2, Plus, Minus, Printer, CreditCard, Wallet, BanknoteIcon } from "lucide-react";
     // import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
     import { useForm } from "react-hook-form";
-    // import React, { useRef } from "react";
-    // import { useReactToPrint } from "react-to-print";
     import { useReactToPrint } from "react-to-print";
     import { useRef } from "react";
 
@@ -28,12 +26,12 @@
       const [paymentMethod, setPaymentMethod] = useState("cash");
       // const printContentRef = useRef(null);
       const [isPrinting, setIsPrinting] = useState(false);
-
       const [isClient, setIsClient] = useState(false)
 
       useEffect(() => {
         setIsClient(true)
       }, [])
+
       const form = useForm();
 
       // ___________ fct() printe.
@@ -47,7 +45,7 @@
        onAfterPrint: () => {
        setIsPrinting(false)},
        });
-
+      // ________________________________
 
       const handleSearch = () => {
         const product = mockProducts.find(p => 
