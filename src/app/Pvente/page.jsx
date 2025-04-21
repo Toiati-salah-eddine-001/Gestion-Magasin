@@ -7,8 +7,10 @@
     import { Barcode, Trash2, Plus, Minus, Printer, CreditCard, Wallet, BanknoteIcon } from "lucide-react";
     // import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
     import { useForm } from "react-hook-form";
-    import React, { useRef } from "react";
+    // import React, { useRef } from "react";
+    // import { useReactToPrint } from "react-to-print";
     import { useReactToPrint } from "react-to-print";
+    import { useRef } from "react";
 
     // Mock product data
     const mockProducts = [
@@ -24,50 +26,28 @@
       const [searchQuery, setSearchQuery] = useState("");
       const [discountPercent, setDiscountPercent] = useState(0);
       const [paymentMethod, setPaymentMethod] = useState("cash");
-      const printContentRef = useRef(null);
+      // const printContentRef = useRef(null);
       const [isPrinting, setIsPrinting] = useState(false);
+
       const [isClient, setIsClient] = useState(false)
-      
+
+      useEffect(() => {
+        setIsClient(true)
+      }, [])
       const form = useForm();
 
       // ___________ fct() printe.
-      const handlePrint = useReactToPrint({
-        // ___________refernece.
-        // content: () => printContentRef.current,
-        content: () => {
-          if (!printContentRef.current) {
-            console.error("Print content not found yes");
-            return null;
-          }
-          return printContentRef.current;
-        },
-        // onPrintError: () => alert('حدث خطأ أثناء الطباعة'),
-        onBeforeGetContent: () => {
-          setIsPrinting(true);
-          console.log("Preparing print content...");
-        },
-        onAfterPrint: () => {
-          setIsPrinting(false);
-          console.log("Print completed");
-        },
-        onPrintError: (error) => {
-          setIsPrinting(false);
-          console.error("Print error:", error);
-          alert('حدث خطأ أثناء الطباعة');
-        },
-        pageStyle: `
-        @media print {
-          body {
-            font-family: Arial, sans-serif;
-          }
-          .no-print {
-            display: none !important;
-          }
-        }
-      `,
-      removeAfterPrint: false
-    }
-      );
+    const contentRef = useRef(null);
+    const reactToPrintFn = useReactToPrint({
+       contentRef,
+
+       onBeforeGetContent: () => {
+       setIsPrinting(true)},
+
+       onAfterPrint: () => {
+       setIsPrinting(false)},
+       });
+
 
       const handleSearch = () => {
         const product = mockProducts.find(p => 
@@ -124,9 +104,7 @@
         setDiscountPercent(0);
         setPaymentMethod("cash");
       };
-      useEffect(() => {
-        setIsClient(true)
-      }, [])
+
     // _________Add meta heade !! 
     // _______________________ ADD Forme feild for back end !!!! 
     // ________________________also add code Facture .
@@ -289,11 +267,11 @@
                       variant="outline" 
                       className="w-full" 
                       disabled={cart.length === 0}
-                      onClick={handlePrint}
+                      onClick={()=>reactToPrintFn()}
                       // onClick={()=>console.log(PrintCentent.current)}
                     >
                       <Printer className="h-4 w-4 mr-2" />
-                      {isPrinting ? "جاري الطباعة..." : "طباعة الفاتورة"}
+                       {isPrinting ? "جاري الطباعة..." : "طباعة الفاتورة"}
                     </Button>
                   </div>
                 </CardContent>
@@ -302,7 +280,7 @@
           </div>
       {/* _______________content Facture  */}
           <div style={{ position: 'fixed', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
-          <div ref={printContentRef} className="p-6">
+          <div ref={contentRef} className="p-6">
             <div className="text-center mb-6">
               <h1 className="text-2xl font-bold">فاتورة بيع</h1>
               <p className="text-muted-foreground">التاريخ: {new Date().toLocaleDateString()}</p>
