@@ -11,7 +11,7 @@ export default function Inventory() {
     { id: 2, name: "منتج 2", quantity: 5, price: 200, barcode: "987654321" },
     { id: 3, name: "منتج 3", quantity: 75, price: 150, barcode: "456789123" },
   ];
-
+//  __________________________________Add the cahrt react !!!!!
   return (
     <MainLayout>
       <div className="space-y-6">

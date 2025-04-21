@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { icon: Home, label: "لوحة التحكم", href: "/" },
+  { icon: Home, label: "لوحة التحكم", href: "/Index" },
   { icon: ShoppingCart, label: "Point de vente", href: "/Pvente" },
   { icon: Package, label: "المخزون", href: "/Inventory" },
-  { icon: Users, label: "المستخدمين", href: "/" },
-  { icon: BarChart3, label: "التقارير", href: "/" },
-  { icon: Settings, label: "الإعدادات", href: "/" },
+  { icon: Users, label: "المستخدمين", href: "/Users" },
+  { icon: BarChart3, label: "التقارير", href: "/Reports" },
+  { icon: Settings, label: "Settings", href: "/Settings" }, // Fixed href
 ];
 
 export function Sidebar() {

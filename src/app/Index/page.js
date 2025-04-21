@@ -71,7 +71,7 @@ export default function Index() {
             </Card>
           </Link>
           
-          <Link href="/#">
+          <Link href="/Inventory">
             <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-lg font-medium">إدارة المخزون</CardTitle>
@@ -86,7 +86,7 @@ export default function Index() {
             </Card>
           </Link>
           
-          <Link href="/#">
+          <Link href="/Reports">
             <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-lg font-medium">التقارير</CardTitle>
