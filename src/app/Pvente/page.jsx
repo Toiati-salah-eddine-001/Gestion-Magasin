@@ -9,6 +9,7 @@
     import { useForm } from "react-hook-form";
     import { useReactToPrint } from "react-to-print";
     import { useRef } from "react";
+    import { Html5QrcodeScanner } from "html5-qrcode"
 
     // Mock product data
     const mockProducts = [
@@ -27,10 +28,289 @@
       // const printContentRef = useRef(null);
       const [isPrinting, setIsPrinting] = useState(false);
       const [isClient, setIsClient] = useState(false)
+      const [dataScaner,setdataScaner]=useState(null);
 
       useEffect(() => {
         setIsClient(true)
+
       }, [])
+
+      // useEffect(() => {
+      //        // ______scanner code :
+      //        const scanner = new Html5QrcodeScanner('reader',{
+      //         fps: 5, 
+      //         qrbox: { 
+      //             width: 250, 
+      //             height: 250 
+      //         }
+      //        });
+      //     scanner.render(success,error);
+      //     function success(result){
+      //         scanner.clear();
+      //         setdataScaner(result)
+      //     }
+      
+      //     function error(result){
+      //         console.warn(result)
+      //     }
+   
+      // // ___________________________________
+      // }, [])
+
+      // ______________________
+      // useEffect(() => {
+      //   if (typeof window === 'undefined') return;
+      
+      //   const scanner = new Html5QrcodeScanner('reader', {
+      //     fps: 5, 
+      //     qrbox: { 
+      //       width: 250, 
+      //       height: 250 
+      //     }
+      //   });
+      
+      //   function success(result) {
+      //     scanner.clear();
+      //     setdataScaner(result);
+      //     // إضافة المنتج الممسوح إلى السلة
+      //     // const product = mockProducts.find(p => p.barcode === result);
+      //     // if (product) {
+      //     //   const existingItem = cart.find(item => item.id === product.id);
+      //     //   if (existingItem) {
+      //     //     setCart(cart.map(item => 
+      //     //       item.id === product.id 
+      //     //         ? { ...item, quantity: item.quantity + 1 } 
+      //     //         : item
+      //     //     ));
+      //     //   } else {
+      //     //     setCart([...cart, { ...product, quantity: 1 }]);
+      //     //   }
+      //     // }
+      //   }
+      
+      //   function error(err) {
+      //     console.warn(err);
+      //     // لا تمسح الماسح عند الخطأ إذا كنت تريد الاستمرار في المسح
+      //   }
+      
+      //   scanner.render(success, error);
+      
+      //   // دالة التنظيف لتجنب تسرب الذاكرة
+      //   return () => {
+      //     scanner.clear().catch(error => {
+      //       console.error("فشل في إيقاف الماسح. ", error);
+      //     });
+      //   };
+      // }, [isClient]); // يعاد التنفيذ فقط عندما تتغير isClient
+      // __________________________
+      // useEffect(() => {
+      //   if (!isClient) return;
+      
+      //   const scanner = new Html5QrcodeScanner('reader', {
+      //     fps: 5,
+      //     qrbox: 
+      //     { width: 250, height: 250 }
+      //   });
+      
+      //   const success = (result) => {
+      //     scanner.clear();
+      //     setdataScaner(result);
+      //     // معالجة النتيجة هنا
+      //   };
+      
+      //   const error = (err) => {
+      //     console.error('خطأ في الماسح:', err);
+      //   };
+      
+      //   scanner.render(success, error);
+      
+      //   return () => {
+      //     scanner.clear().catch(error);
+      //   };
+      // }, [isClient]); // يعتمد على isClient فقط
+
+
+
+
+
+
+      // useEffect(() => {
+      //   // تأكد أننا في بيئة العميل فقط
+      //   if (!isClient) return;
+      
+      //   let scanner;
+        
+      //   try {
+      //     scanner = new Html5QrcodeScanner('reader', {
+      //       fps: 5,
+      //       qrbox: { width: 250, height: 250 }
+      //     });
+      
+      //     const success = (result) => {
+      //       // أوقف الماسح أولاً قبل تحديث الحالة
+      //       scanner.clear().catch(console.error);
+            
+      //       // تحديث حالة النتيجة
+      //       setdataScaner(result);
+            
+      //       // إضافة المنتج للسلة
+      //       const product = mockProducts.find(p => p.barcode === result);
+      //       if (product) {
+      //         setCart(prevCart => {
+      //           const existingItem = prevCart.find(item => item.id === product.id);
+      //           return existingItem
+      //             ? prevCart.map(item => 
+      //                 item.id === product.id 
+      //                   ? {...item, quantity: item.quantity + 1} 
+      //                   : item
+      //               )
+      //             : [...prevCart, {...product, quantity: 1}];
+      //         });
+      //       }
+      //     };
+      
+      //     const error = (err) => {
+      //       console.warn('خطأ في الماسح:', err);
+      //     };
+      
+      //     scanner.render(success, error);
+      //   } catch (err) {
+      //     console.error('فشل تهيئة الماسح:', err);
+      //   }
+      
+      //   // دالة التنظيف
+      //   return () => {
+      //     if (scanner) {
+      //       scanner.clear().catch(err => {
+      //         console.error('فشل في إيقاف الماسح:', err);
+      //       });
+      //     }
+      //   };
+      // }, []); // مصفوفة اعتمادات فارغة لأننا نريد تشغيله مرة واحدة فقط
+
+      // ____________________clode :
+      useEffect(() => {
+        // Only run this on the client-side
+        if (!isClient) return;
+        
+        // Create a reference to store the scanner instance
+        let scanner = null;
+        
+        // Wait a moment to ensure the DOM element exists
+        const initializeScanner = setTimeout(() => {
+          try {
+            // Check if the element exists
+            const readerElement = document.getElementById('reader');
+            if (!readerElement) {
+              console.error("Reader element not found in DOM");
+              return;
+            }
+            
+            // Create scanner with appropriate configuration
+            scanner = new Html5QrcodeScanner('reader', {
+              fps: 5,
+              qrbox: { width: 250, height: 250 },
+              rememberLastUsedCamera: true,
+            }, /* verbose= */ false);
+            
+            const onScanSuccess = (decodedText) => {
+              // Pause scanning after success
+              scanner.pause();
+              
+              // Update state with scanned value
+              setdataScaner(decodedText);
+              
+              // Add product to cart if it exists
+              const product = mockProducts.find(p => p.barcode === decodedText);
+              if (product) {
+                setCart(prevCart => {
+                  const existingItem = prevCart.find(item => item.id === product.id);
+                  if (existingItem) {
+                    return prevCart.map(item => 
+                      item.id === product.id 
+                        ? {...item, quantity: item.quantity + 1} 
+                        : item
+                    );
+                  } else {
+                    return [...prevCart, {...product, quantity: 1}];
+                  }
+                });
+              }
+            };
+            
+            const onScanFailure = (error) => {
+              // Don't log errors on every frame, as it's too noisy
+              // Only log critical issues
+              if (error && error.name === 'NotAllowedError') {
+                console.error('Camera permission denied:', error);
+              }
+            };
+            
+            // Start the scanner
+            scanner.render(onScanSuccess, onScanFailure);
+            
+          } catch (err) {
+            console.error('Failed to initialize scanner:', err);
+          }
+        }, 500); // Small delay to ensure DOM is ready
+        
+        // Cleanup function
+        return () => {
+          clearTimeout(initializeScanner);
+          
+          // Properly clear the scanner on unmount
+          if (scanner) {
+            try {
+              scanner.clear();
+            } catch (err) {
+              console.error('Failed to clear scanner:', err);
+            }
+          }
+        };
+      }, [isClient]); // Only depend on isClient
+      
+      // Add this function to resume scanning after a successful scan
+      const resetScanner = () => {
+        setdataScaner(null);
+        
+        // Try to resume the scanner
+        setTimeout(() => {
+          try {
+            const scanner = new Html5QrcodeScanner('reader', {
+              fps: 5,
+              qrbox: { width: 250, height: 250 },
+            }, false);
+            
+            scanner.render(
+              (result) => {
+                scanner.pause();
+                setdataScaner(result);
+                
+                // Add product to cart if it exists
+                const product = mockProducts.find(p => p.barcode === result);
+                if (product) {
+                  setCart(prevCart => {
+                    const existingItem = prevCart.find(item => item.id === product.id);
+                    if (existingItem) {
+                      return prevCart.map(item => 
+                        item.id === product.id 
+                          ? {...item, quantity: item.quantity + 1} 
+                          : item
+                      );
+                    } else {
+                      return [...prevCart, {...product, quantity: 1}];
+                    }
+                  });
+                }
+              },
+              (error) => console.warn(error)
+            );
+          } catch (err) {
+            console.error('Failed to reinitialize scanner:', err);
+          }
+        }, 500);
+      };
+      // __________________________________
 
       const form = useForm();
 
@@ -106,7 +386,11 @@
     // _________Add meta heade !! 
     // _______________________ ADD Forme feild for back end !!!! 
     // ________________________also add code Facture .
-      if(!isClient) return null;
+    if (!isClient) {
+      return <div>جاري تحميل الماسح...</div>;
+    }
+    console.log("dataScaner:", dataScaner);
+
       return (
         <MainLayout>
         {/* <time dateTime="2016-10-25" suppresshydrationwarning="" /> */}
@@ -276,6 +560,40 @@
               </Card>
             </div>
           </div>
+
+          {/* {!dataScaner && <div id="reader" style={{ width: "500px", height: "400px", backgroundColor: "#eee" }}></div>}
+          {dataScaner && <> <p>تم مسح: {dataScaner}</p> <Button onClick={() => setdataScaner(null)}>
+                مسح منتج آخر
+          </Button></>} */}
+          {/* <div className="mt-8">
+              <h2 className="text-lg font-semibold mb-2">قارئ الباركود</h2>
+              <div id="reader" className="border p-4 rounded bg-white shadow-md" />
+              {dataScaner && (
+                <p className="mt-2 text-sm text-green-600">
+                  تم قراءة الباركود: <strong>{dataScaner}</strong>
+                </p>
+              )}
+            </div> */}
+            {/* ______________________________________ */}
+            <div className="mt-8">
+  <h2 className="text-lg font-semibold mb-2">قارئ الباركود</h2>
+  <div id="reader" className="border p-4 rounded bg-white shadow-md" />
+  {dataScaner && (
+    <div className="mt-2">
+      <p className="text-sm text-green-600">
+        تم قراءة الباركود: <strong>{dataScaner}</strong>
+      </p>
+      <Button 
+        onClick={resetScanner}
+        variant="outline"
+        className="mt-2"
+      >
+        مسح منتج آخر
+      </Button>
+    </div>
+  )}
+</div>
+             {/* ____________________________________________           */}
       {/* _______________content Facture  */}
           <div style={{ position: 'fixed', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
           <div ref={contentRef} className="p-6">
