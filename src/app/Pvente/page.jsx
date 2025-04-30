@@ -496,9 +496,7 @@ export default function POS() {
                           </td>
                           <td className="py-2 px-4">
                             <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-destructive"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
                               onClick={() => handleRemoveItem(item.id)}
                             >
                               <Trash2 className="h-4 w-4" />

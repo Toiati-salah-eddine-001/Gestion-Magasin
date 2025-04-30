@@ -7,6 +7,7 @@ function PofitLosData() {
     { date: "2025-03", revenue: 6000, expenses: 3500 },
     { date: "2025-04", revenue: 4000, expenses: 4200 },
   ];
+
   const dataWithProfit = profitLossData.map(item => ({
     ...item,
     profit: item.revenue - item.expenses
@@ -16,7 +17,7 @@ function PofitLosData() {
     <BarChart width={1000} height={300} data={dataWithProfit}>
       <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
       <XAxis dataKey="date" />
-      <YAxis />
+      <YAxis /> 
       <Tooltip />
       <Legend />
       <Bar dataKey="revenue" fill="#4caf50" name="الإيرادات" />

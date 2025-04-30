@@ -75,7 +75,7 @@ export default function Reports() {
                 <CardTitle>الأرباح والخسائر</CardTitle>
               </CardHeader>
               <CardContent className="h-[400px] flex items-center justify-center border-2 border-dashed">
-                <div className="text-muted-foreground">رسم بياني الأرباح</div>
+                
                 <PofitLosData/>
               </CardContent>
             </Card>
