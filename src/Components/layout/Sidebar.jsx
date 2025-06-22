@@ -1,5 +1,5 @@
 import { Home, Package, ShoppingCart, Users, BarChart3, Settings } from "lucide-react";
-import Link from "next/link"; // Ensure Link is imported correctly
+import Link from "next/link";
 import {
   Sidebar as SidebarContainer,
   SidebarContent,
@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { icon: Home, label: "لوحة التحكم", href: "/Index" },
+  { icon: Home, label: "Tableau de bord", href: "/Index" },
   { icon: ShoppingCart, label: "Point de vente", href: "/Pvente" },
-  { icon: Package, label: "المخزون", href: "/Inventory" },
-  { icon: Users, label: "المستخدمين", href: "/Users" },
-  { icon: BarChart3, label: "التقارير", href: "/Reports" },
-  { icon: Settings, label: "Settings", href: "/Settings" }, // Fixed href
+  { icon: Package, label: "Stocks", href: "/Inventory" },
+  { icon: Users, label: "Utilisateurs", href: "/Users" },
+  { icon: BarChart3, label: "Rapports", href: "/Reports" },
+  { icon: Settings, label: "Paramètres", href: "/Settings" },
 ];
 
 export function Sidebar() {
@@ -25,10 +25,10 @@ export function Sidebar() {
     <SidebarContainer>
       <SidebarContent>
         <div className="p-4">
-          <h1 className="text-xl font-bold">نظام إدارة المتجر</h1>
+          <h1 className="text-xl font-bold">Système de Gestion de Magasin</h1>
         </div>
         <SidebarGroup>
-          <SidebarGroupLabel>القائمة</SidebarGroupLabel>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -39,7 +39,6 @@ export function Sidebar() {
                       <span>{item.label}</span>
                     </Link>
                   </SidebarMenuButton>
-                  {console.log("Navigating to:", item.href)}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

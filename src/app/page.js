@@ -1,19 +1,38 @@
-// import Image from "next/image";
-// export default function Home() {
-//   return (
-//     <>
-      
-//     </>
-//   );
-// }
+"use client"
 
-
-
-
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from "next/link"
 import { ArrowRight, Store, ShoppingBag } from "lucide-react"
+import { authAPI, api } from '@/lib/api'; // Import authAPI and the api client instance
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await authAPI.login({ email, password });
+      if (response.data && response.data.token) {
+        api.setToken(response.data.token); // Use the api instance to set the token
+        toast.success('Logged in successfully!');
+        router.push('/Index'); // Redirect to the dashboard
+      } else {
+        throw new Error('Login failed: No token received.');
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.message || 'Failed to login. Please check your credentials.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left side - Branding */}
@@ -67,7 +86,7 @@ export default function LoginPage() {
             <p className="text-gray-600 mt-2">Enter your credentials to access your dashboard</p>
           </div>
 {/* ______________#Forme________________________ */}
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email address
@@ -80,6 +99,9 @@ export default function LoginPage() {
                 required
                 className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition duration-150"
                 placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
 
@@ -100,6 +122,9 @@ export default function LoginPage() {
                 required
                 className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition duration-150"
                 placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
 
@@ -118,11 +143,12 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition duration-150"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition duration-150 disabled:bg-emerald-400"
+                disabled={isLoading}
               >
                 <span className="flex items-center">
-                  Sign in
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  {isLoading ? 'Signing in...' : 'Sign in'}
+                  {!isLoading && <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />}
                 </span>
               </button>
             </div>

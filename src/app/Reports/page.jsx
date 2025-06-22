@@ -12,20 +12,20 @@ export default function Reports() {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">التقارير</h1>
+        <h1 className="text-2xl font-bold">Rapports</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">إجمالي المبيعات اليوم</CardTitle>
+              <CardTitle className="text-lg">Total des ventes du jour</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">5,230 ر.س</div>
+              <div className="text-2xl font-bold">5,230 €</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">عدد المبيعات اليوم</CardTitle>
+              <CardTitle className="text-lg">Nombre de ventes du jour</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">23</div>
@@ -33,24 +33,24 @@ export default function Reports() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">متوسط قيمة الفاتورة</CardTitle>
+              <CardTitle className="text-lg">Valeur moyenne des factures</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">227 ر.س</div>
+              <div className="text-2xl font-bold">227 €</div>
             </CardContent>
           </Card>
         </div>
 
         <Tabs defaultValue="sales" className="w-full">
           <TabsList>
-            <TabsTrigger value="sales">تقارير المبيعات</TabsTrigger>
-            <TabsTrigger value="inventory">تقارير المخزون</TabsTrigger>
-            <TabsTrigger value="profit">الأرباح والخسائر</TabsTrigger>
+            <TabsTrigger value="sales">Rapports des ventes</TabsTrigger>
+            <TabsTrigger value="inventory">Rapports de stock</TabsTrigger>
+            <TabsTrigger value="profit">Profits et pertes</TabsTrigger>
           </TabsList>
           <TabsContent value="sales" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>المبيعات الشهرية</CardTitle>
+                <CardTitle>Ventes mensuelles</CardTitle>
               </CardHeader>
               <CardContent className="h-[400px] flex items-center justify-center border-2 border-dashed">
                 {/* <div className="text-muted-foreground">رسم بياني المبيعات</div> */}
@@ -61,7 +61,7 @@ export default function Reports() {
           <TabsContent value="inventory">
             <Card>
               <CardHeader>
-                <CardTitle>حركة المخزون</CardTitle>
+                <CardTitle>Mouvements de stock</CardTitle>
               </CardHeader>
               <CardContent className="h-[400px] flex items-center justify-center border-2 border-dashed">
                 {/* <div className="text-muted-foreground">رسم بياني المخزون</div> */}
@@ -72,10 +72,10 @@ export default function Reports() {
           <TabsContent value="profit">
             <Card>
               <CardHeader>
-                <CardTitle>الأرباح والخسائر</CardTitle>
+                <CardTitle>Profits et pertes</CardTitle>
               </CardHeader>
               <CardContent className="h-[400px] flex items-center justify-center border-2 border-dashed">
-                <div className="text-muted-foreground">رسم بياني الأرباح</div>
+                <div className="text-muted-foreground">Graphique des profits</div>
                 <PofitLosData/>
               </CardContent>
             </Card>

@@ -11,80 +11,36 @@ export default function Settings() {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">الإعدادات</h1>
+        <h1 className="text-2xl font-bold">Paramètres</h1>
 
-        <Tabs defaultValue="store" className="w-full">
+        <Tabs defaultValue="printing" className="w-full">
           <TabsList>
-            <TabsTrigger value="store">معلومات المتجر</TabsTrigger>
-            <TabsTrigger value="printing">إعدادات الطباعة</TabsTrigger>
-            <TabsTrigger value="system">إعدادات النظام</TabsTrigger>
+            <TabsTrigger value="store">Informations du magasin</TabsTrigger>
           </TabsList>
 
           <TabsContent value="store" className="mt-6 space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>معلومات المتجر الأساسية</CardTitle>
+                <CardTitle>Informations de base du magasin</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="storeName">اسم المتجر</Label>
-                  <Input id="storeName" placeholder="أدخل اسم المتجر" />
+                  <Label htmlFor="storeName">Nom du magasin</Label>
+                  <Input id="storeName" placeholder="Entrez le nom du magasin" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="storeAddress">عنوان المتجر</Label>
-                  <Textarea id="storeAddress" placeholder="أدخل عنوان المتجر" />
+                  <Label htmlFor="storeAddress">Adresse du magasin</Label>
+                  <Textarea id="storeAddress" placeholder="Entrez l'adresse du magasin" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">رقم الهاتف</Label>
-                  <Input id="phone" placeholder="أدخل رقم الهاتف" />
+                  <Label htmlFor="phone">Numéro de téléphone</Label>
+                  <Input id="phone" placeholder="Entrez le numéro de téléphone" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">البريد الإلكتروني</Label>
-                  <Input id="email" type="email" placeholder="أدخل البريد الإلكتروني" />
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" placeholder="Entrez l'adresse email" />
                 </div>
-                <Button>حفظ التغييرات</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="printing" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>إعدادات الطباعة</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="printerType">نوع الطابعة</Label>
-                  <Input id="printerType" placeholder="حدد نوع الطابعة" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="receiptHeader">ترويسة الفاتورة</Label>
-                  <Textarea id="receiptHeader" placeholder="أدخل نص ترويسة الفاتورة" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="receiptFooter">تذييل الفاتورة</Label>
-                  <Textarea id="receiptFooter" placeholder="أدخل نص تذييل الفاتورة" />
-                </div>
-                <Button>حفظ التغييرات</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="system" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>إعدادات النظام</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="currency">العملة</Label>
-                  <Input id="currency" placeholder="ر.س" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="timezone">المنطقة الزمنية</Label>
-                  <Input id="timezone" placeholder="التوقيت" />
-                </div>
-                <Button>حفظ التغييرات</Button>
+                <Button>Enregistrer les modifications</Button>
               </CardContent>
             </Card>
           </TabsContent>

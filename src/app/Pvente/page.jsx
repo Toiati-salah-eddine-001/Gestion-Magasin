@@ -19,14 +19,16 @@ import { useForm } from "react-hook-form";
 import { useReactToPrint } from "react-to-print";
 import { useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
+import BarcodeScanner from "@/Components/BarcodeScanner"; // Ensure this path is correct
+import { settingsAPI } from "@/lib/api";
 
 // Mock product data
 const mockProducts = [
-  { id: 1, name: "كمبيوتر محمول", price: 1200, barcode: "1234567890" },
-  { id: 2, name: "هاتف ذكي", price: 500, barcode: "0987654321" },
-  { id: 3, name: "سماعات لاسلكية", price: 80, barcode: "5678901234" },
-  { id: 4, name: "شاحن محمول", price: 25, barcode: "4321098765" },
-  { id: 5, name: "حافظة للهاتف", price: 15, barcode: "9876543210" },
+  { id: 1, name: "Ordinateur portable", price: 1200, barcode: "1234567890" },
+  { id: 2, name: "Smartphone", price: 500, barcode: "0987654321" },
+  { id: 3, name: "Écouteurs sans fil", price: 80, barcode: "5678901234" },
+  { id: 4, name: "Chargeur portable", price: 25, barcode: "4321098765" },
+  { id: 5, name: "Coque de téléphone", price: 15, barcode: "9876543210" },
 ];
 
 export default function POS() {
@@ -38,9 +40,18 @@ export default function POS() {
   const [isPrinting, setIsPrinting] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [dataScaner, setdataScaner] = useState(null);
+  const [storeInfo, setStoreInfo] = useState({});
 
   useEffect(() => {
     setIsClient(true);
+    // Fetch store info
+    settingsAPI.getAll('store').then((res) => {
+      if (res && res.data && res.data.store) {
+        setStoreInfo(res.data.store);
+      }
+    }).catch(() => {
+      setStoreInfo({});
+    });
   }, []);
 
   // useEffect(() => {
@@ -80,7 +91,7 @@ export default function POS() {
   //   function success(result) {
   //     scanner.clear();
   //     setdataScaner(result);
-  //     // إضافة المنتج الممسوح إلى السلة
+  //     // Ajouter le produit scanné au panier
   //     // const product = mockProducts.find(p => p.barcode === result);
   //     // if (product) {
   //     //   const existingItem = cart.find(item => item.id === product.id);
@@ -98,18 +109,18 @@ export default function POS() {
 
   //   function error(err) {
   //     console.warn(err);
-  //     // لا تمسح الماسح عند الخطأ إذا كنت تريد الاستمرار في المسح
+  //     // Ne pas effacer le scanner en cas d'erreur si vous voulez continuer à scanner
   //   }
 
   //   scanner.render(success, error);
 
-  //   // دالة التنظيف لتجنب تسرب الذاكرة
+  //   // Fonction de nettoyage pour éviter les fuites de mémoire
   //   return () => {
   //     scanner.clear().catch(error => {
-  //       console.error("فشل في إيقاف الماسح. ", error);
+  //       console.error("Échec de l'arrêt du scanner. ", error);
   //     });
   //   };
-  // }, [isClient]); // يعاد التنفيذ فقط عندما تتغير isClient
+  // }, [isClient]); // Réexécuter uniquement lorsque isClient change
   // __________________________
   // useEffect(() => {
   //   if (!isClient) return;
@@ -123,11 +134,11 @@ export default function POS() {
   //   const success = (result) => {
   //     scanner.clear();
   //     setdataScaner(result);
-  //     // معالجة النتيجة هنا
+  //     // Traiter le résultat ici
   //   };
 
   //   const error = (err) => {
-  //     console.error('خطأ في الماسح:', err);
+  //     console.error('Erreur du scanner:', err);
   //   };
 
   //   scanner.render(success, error);
@@ -135,10 +146,10 @@ export default function POS() {
   //   return () => {
   //     scanner.clear().catch(error);
   //   };
-  // }, [isClient]); // يعتمد على isClient فقط
+  // }, [isClient]); // Dépend uniquement de isClient
 
   // useEffect(() => {
-  //   // تأكد أننا في بيئة العميل فقط
+  //   // S'assurer qu'on est uniquement dans l'environnement client
   //   if (!isClient) return;
 
   //   let scanner;
@@ -150,13 +161,13 @@ export default function POS() {
   //     });
 
   //     const success = (result) => {
-  //       // أوقف الماسح أولاً قبل تحديث الحالة
+  //       // Arrêter le scanner avant de mettre à jour l'état
   //       scanner.clear().catch(console.error);
 
-  //       // تحديث حالة النتيجة
+  //       // Mettre à jour l'état du résultat
   //       setdataScaner(result);
 
-  //       // إضافة المنتج للسلة
+  //       // Ajouter le produit au panier
   //       const product = mockProducts.find(p => p.barcode === result);
   //       if (product) {
   //         setCart(prevCart => {
@@ -173,23 +184,23 @@ export default function POS() {
   //     };
 
   //     const error = (err) => {
-  //       console.warn('خطأ في الماسح:', err);
+  //       console.warn('Erreur du scanner:', err);
   //     };
 
   //     scanner.render(success, error);
   //   } catch (err) {
-  //     console.error('فشل تهيئة الماسح:', err);
+  //     console.error('Échec de l\'initialisation du scanner:', err);
   //   }
 
-  //   // دالة التنظيف
+  //   // Fonction de nettoyage
   //   return () => {
   //     if (scanner) {
   //       scanner.clear().catch(err => {
-  //         console.error('فشل في إيقاف الماسح:', err);
+  //         console.error('Échec de l\'arrêt du scanner:', err);
   //       });
   //     }
   //   };
-  // }, []); // مصفوفة اعتمادات فارغة لأننا نريد تشغيله مرة واحدة فقط
+  // }, []); // Tableau de dépendances vide car nous voulons l'exécuter une seule fois
 
   // ____________________clode :
   useEffect(() => {
@@ -205,7 +216,7 @@ export default function POS() {
         // Check if the element exists
         const readerElement = document.getElementById("reader");
         if (!readerElement) {
-          console.error("Reader element not found in DOM");
+          console.error("Élément lecteur non trouvé dans le DOM");
           return;
         }
 
@@ -224,41 +235,25 @@ export default function POS() {
           // Pause scanning after success
           scanner.pause();
 
-          // Update state with scanned value
-          setdataScaner(decodedText);
-
-          // Add product to cart if it exists
-          const product = mockProducts.find((p) => p.barcode === decodedText);
-          if (product) {
-            setCart((prevCart) => {
-              const existingItem = prevCart.find(
-                (item) => item.id === product.id
-              );
-              if (existingItem) {
-                return prevCart.map((item) =>
-                  item.id === product.id
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-                );
-              } else {
-                return [...prevCart, { ...product, quantity: 1 }];
-              }
-            });
-          }
+          // Update state with scanned value and trigger search
+          setSearchQuery(decodedText);
+          setTimeout(() => {
+            handleSearch(decodedText);
+          }, 0);
         };
 
         const onScanFailure = (error) => {
           // Don't log errors on every frame, as it's too noisy
           // Only log critical issues
           if (error && error.name === "NotAllowedError") {
-            console.error("Camera permission denied:", error);
+            console.error("Permission de la caméra refusée:", error);
           }
         };
 
         // Start the scanner
         scanner.render(onScanSuccess, onScanFailure);
       } catch (err) {
-        console.error("Failed to initialize scanner:", err);
+        console.error("Échec de l'initialisation du scanner:", err);
       }
     }, 500); // Small delay to ensure DOM is ready
 
@@ -271,7 +266,7 @@ export default function POS() {
         try {
           scanner.clear();
         } catch (err) {
-          console.error("Failed to clear scanner:", err);
+          console.error("Échec de la réinitialisation du scanner:", err);
         }
       }
     };
@@ -320,7 +315,7 @@ export default function POS() {
           (error) => console.warn(error)
         );
       } catch (err) {
-        console.error("Failed to reinitialize scanner:", err);
+        console.error("Échec de la réinitialisation du scanner:", err);
       }
     }, 500);
   };
@@ -343,11 +338,12 @@ export default function POS() {
   });
   // ________________________________
 
-  const handleSearch = () => {
+  const handleSearch = (query) => {
+    const searchValue = query !== undefined ? query : searchQuery;
     const product = mockProducts.find(
       (p) =>
-        p.barcode === searchQuery ||
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        p.barcode === searchValue ||
+        p.name.toLowerCase().includes(searchValue.toLowerCase())
     );
 
     if (product) {
@@ -398,13 +394,42 @@ export default function POS() {
   const discountAmount = (subtotal * discountPercent) / 100;
   const total = subtotal - discountAmount;
 
-  const handleCompleteSale = () => {
-    // Here you would save the sale to a database
-    console.log("Sale completed", { cart, paymentMethod, total });
-    // Reset the cart
-    setCart([]);
-    setDiscountPercent(0);
-    setPaymentMethod("cash");
+  const handleCompleteSale = async () => {
+    try {
+      setLoading(true);
+      const saleData = {
+        items: cart.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          unit_price: item.price
+        })),
+        payment_method: paymentMethod,
+        discount_percent: discountPercent,
+        total: total
+      };
+
+      await salesApi.createSale(saleData);
+      
+      console.log("Sale completed successfully");
+
+      // Reset cart and fetch updated stats
+      setCart([]);
+      setDiscountPercent(0);
+      setPaymentMethod('cash');
+      fetchDailyStats();
+
+      // Handle printing
+      setIsPrinting(true);
+      setTimeout(() => {
+        setIsPrinting(false);
+      }, 1000);
+
+    } catch (error) {
+      console.error('Error completing sale:', error);
+      console.error("Failed to complete sale");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // _________Add meta heade !!
@@ -432,7 +457,7 @@ export default function POS() {
             </CardHeader>
             <CardContent>
               <div className="flex space-x-2 mb-4 flex-row-reverse">
-                <Button onClick={handleSearch}>بحث</Button>
+                <Button onClick={() => handleSearch(searchQuery)}>بحث</Button>
                 <Input
                   className="flex-1"
                   placeholder="ادخل اسم المنتج أو الباركود"
@@ -446,11 +471,11 @@ export default function POS() {
                 <table className="w-full">
                   <thead>
                     <tr className="text-right border-b">
-                      <th className="py-2 px-4 font-medium">المنتج</th>
-                      <th className="py-2 px-4 font-medium">السعر</th>
-                      <th className="py-2 px-4 font-medium">الكمية</th>
-                      <th className="py-2 px-4 font-medium">المجموع</th>
-                      <th className="py-2 px-4 font-medium">الإجراءات</th>
+                      <th className="py-2 px-4 font-medium">Produit</th>
+                      <th className="py-2 px-4 font-medium">Prix</th>
+                      <th className="py-2 px-4 font-medium">Quantité</th>
+                      <th className="py-2 px-4 font-medium">Total</th>
+                      <th className="py-2 px-4 font-medium">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -460,7 +485,7 @@ export default function POS() {
                           colSpan={5}
                           className="py-4 text-center text-muted-foreground"
                         >
-                          لا توجد منتجات في السلة
+                          Aucun produit dans le panier
                         </td>
                       </tr>
                     ) : (
@@ -468,7 +493,7 @@ export default function POS() {
                         <tr key={item.id} className="border-b text-right">
                           <td className="py-2 px-4">{item.name}</td>
                           <td className="py-2 px-4">
-                            {item.price.toFixed(2)} ر.س
+                            {item.price.toFixed(2)} €
                           </td>
                           <td className="py-2 px-4">
                             <div className="flex items-center space-x-2">
@@ -492,7 +517,7 @@ export default function POS() {
                             </div>
                           </td>
                           <td className="py-2 px-4">
-                            {(item.price * item.quantity).toFixed(2)} ر.س
+                            {(item.price * item.quantity).toFixed(2)} €
                           </td>
                           <td className="py-2 px-4">
                             <Button
@@ -516,16 +541,16 @@ export default function POS() {
           {/* Right Column - Checkout */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">الفاتورة</CardTitle>
+              <CardTitle className="text-lg font-medium">Facture</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">المجموع الفرعي:</span>
-                  <span>{subtotal.toFixed(2)} ر.س</span>
+                  <span className="text-muted-foreground">Sous-total :</span>
+                  <span>{subtotal.toFixed(2)} €</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">الخصم (%):</span>
+                  <span className="text-muted-foreground">Remise (%):</span>
                   <Input
                     type="number"
                     className="w-24"
@@ -534,13 +559,13 @@ export default function POS() {
                   />
                 </div>
                 <div className="flex justify-between border-t pt-2">
-                  <span className="font-bold">المجموع:</span>
-                  <span className="font-bold">{total.toFixed(2)} ر.س</span>
+                  <span className="font-bold">Total :</span>
+                  <span className="font-bold">{total.toFixed(2)} €</span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-medium">طريقة الدفع</h3>
+                <h3 className="font-medium">Mode de paiement</h3>
                 <div className="flex space-x-2">
                   <Button
                     variant={paymentMethod === "cash" ? "default" : "outline"}
@@ -548,7 +573,7 @@ export default function POS() {
                     className="flex-1"
                   >
                     <BanknoteIcon className="h-4 w-4 mr-2" />
-                    نقدي
+                    Espèces
                   </Button>
                   <Button
                     variant={paymentMethod === "card" ? "default" : "outline"}
@@ -556,7 +581,7 @@ export default function POS() {
                     className="flex-1"
                   >
                     <CreditCard className="h-4 w-4 mr-2" />
-                    بطاقة
+                    Carte
                   </Button>
                   <Button
                     variant={
@@ -566,7 +591,7 @@ export default function POS() {
                     className="flex-1"
                   >
                     <Wallet className="h-4 w-4 mr-2" />
-                    تحويل
+                    Virement
                   </Button>
                 </div>
               </div>
@@ -578,7 +603,7 @@ export default function POS() {
                   disabled={cart.length === 0}
                   onClick={handleCompleteSale}
                 >
-                  تأكيد البيع
+                  Confirmer la vente
                 </Button>
                 <Button
                   variant="outline"
@@ -588,7 +613,7 @@ export default function POS() {
                   // onClick={()=>console.log(PrintCentent.current)}
                 >
                   <Printer className="h-4 w-4 mr-2" />
-                  {isPrinting ? "جاري الطباعة..." : "طباعة الفاتورة"}
+                  {isPrinting ? "Impression en cours..." : "Imprimer facture"}
                 </Button>
               </div>
             </CardContent>
@@ -598,32 +623,91 @@ export default function POS() {
 
       {/* {!dataScaner && <div id="reader" style={{ width: "500px", height: "400px", backgroundColor: "#eee" }}></div>}
           {dataScaner && <> <p>تم مسح: {dataScaner}</p> <Button onClick={() => setdataScaner(null)}>
-                مسح منتج آخر
+                Scanner un autre produit
           </Button></>} */}
       {/* <div className="mt-8">
-              <h2 className="text-lg font-semibold mb-2">قارئ الباركود</h2>
+              <h2 className="text-lg font-semibold mb-2">Lecteur de code-barres</h2>
               <div id="reader" className="border p-4 rounded bg-white shadow-md" />
               {dataScaner && (
                 <p className="mt-2 text-sm text-green-600">
-                  تم قراءة الباركود: <strong>{dataScaner}</strong>
+                  Code-barres lu: <strong>{dataScaner}</strong>
                 </p>
               )}
             </div> */}
-      {/* ______________________________________ */}
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold mb-2">قارئ الباركود</h2>
+      {/* __________________Scanne  Code Part ____________________ */}
+
+
+
+
+      {/* <div className="mt-8">
+        <h2 className="text-lg font-semibold mb-2">Lecteur de code-barres</h2>
         <div id="reader" className="border p-4 rounded bg-white shadow-md" />
         {dataScaner && (
           <div className="mt-2">
             <p className="text-sm text-green-600">
-              تم قراءة الباركود: <strong>{dataScaner}</strong>
+              Code-barres lu: <strong>{dataScaner}</strong>
             </p>
             <Button onClick={resetScanner} variant="outline" className="mt-2">
-              مسح منتج آخر
+              Scanner un autre produit
+            </Button>
+          </div>
+        )}
+      </div> */}
+          <div className="mt-8">
+        <h2 className="text-lg font-semibold mb-2">Lecteur de code-barres</h2>
+        <BarcodeScanner
+          onScanSuccess={(decodedText) => {
+          // Pause scanning after success
+          scanner.pause();
+
+          // Update state with scanned value
+          setdataScaner(decodedText);
+
+          // Add product to cart if it exists
+          const product = mockProducts.find((p) => p.barcode === decodedText);
+          if (product) {
+            setCart((prevCart) => {
+              const existingItem = prevCart.find(
+                (item) => item.id === product.id
+              );
+              if (existingItem) {
+                return prevCart.map((item) =>
+                  item.id === product.id
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
+                );
+              } else {
+                return [...prevCart, { ...product, quantity: 1 }];
+              }
+            });
+          }
+        }}
+
+
+          onScanFailure={(error) => {
+          // Don't log errors on every frame, as it's too noisy
+          // Only log critical issues
+          if (error && error.name === "NotAllowedError") {
+            console.error("Permission de la caméra refusée:", error);
+          }
+        }}
+        />
+        {dataScaner && (
+          <div className="mt-2">
+            <p className="text-sm text-green-600">
+              Code-barres lu: <strong>{dataScaner}</strong>
+            </p>
+            <Button onClick={resetScanner} variant="outline" className="mt-2">
+              Scanner un autre produit
             </Button>
           </div>
         )}
       </div>
+
+
+
+
+
       {/* ____________________________________________           */}
       {/* _______________content Facture  */}
       <div
@@ -637,10 +721,17 @@ export default function POS() {
         }}
       >
         <div ref={contentRef} className="p-6">
+          {/* Store info at the top of the invoice */}
+          <div className="text-center mb-2">
+            <div className="font-bold text-lg">{storeInfo.store_name || "Nom du magasin"}</div>
+            <div>{storeInfo.store_address}</div>
+            <div>{storeInfo.store_phone}</div>
+            <div>{storeInfo.store_email}</div>
+          </div>
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold">فاتورة بيع</h1>
+            <h1 className="text-2xl font-bold">Facture de vente</h1>
             <p className="text-muted-foreground">
-              التاريخ: {new Date().toLocaleDateString()}
+              Date: {new Date().toLocaleDateString('fr-FR')}
             </p>
           </div>
 
@@ -648,20 +739,20 @@ export default function POS() {
             <table className="w-full">
               <thead>
                 <tr className="border-b text-right">
-                  <th className="py-2 px-4">المنتج</th>
-                  <th className="py-2 px-4">السعر</th>
-                  <th className="py-2 px-4">الكمية</th>
-                  <th className="py-2 px-4">المجموع</th>
+                  <th className="py-2 px-4">Produit</th>
+                  <th className="py-2 px-4">Prix</th>
+                  <th className="py-2 px-4">Quantité</th>
+                  <th className="py-2 px-4">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {cart.map((item) => (
                   <tr key={item.id} className="border-b text-right">
                     <td className="py-2 px-4">{item.name}</td>
-                    <td className="py-2 px-4">{item.price.toFixed(2)} ر.س</td>
+                    <td className="py-2 px-4">{item.price.toFixed(2)} €</td>
                     <td className="py-2 px-4">{item.quantity}</td>
                     <td className="py-2 px-4">
-                      {(item.price * item.quantity).toFixed(2)} ر.س
+                      {(item.price * item.quantity).toFixed(2)} €
                     </td>
                   </tr>
                 ))}
@@ -671,24 +762,24 @@ export default function POS() {
 
           <div className="border-t pt-4 space-y-2">
             <div className="flex justify-between">
-              <span>المجموع الفرعي:</span>
-              <span>{subtotal.toFixed(2)} ر.س</span>
+              <span>Sous-total :</span>
+              <span>{subtotal.toFixed(2)} €</span>
             </div>
             <div className="flex justify-between">
-              <span>الخصم:</span>
+              <span>Remise:</span>
               <span>
                 {discountAmount.toFixed(2)} ر.س ({discountPercent}%)
               </span>
             </div>
             <div className="flex justify-between font-bold text-lg">
-              <span>المجموع النهائي:</span>
-              <span>{total.toFixed(2)} ر.س</span>
+              <span>Total final :</span>
+              <span>{total.toFixed(2)} €</span>
             </div>
           </div>
 
           <div className="mt-8 pt-4 border-t text-center text-sm text-muted-foreground">
-            <p>شكراً لتعاملكم معنا</p>
-            <p>للاستفسار: 0123456789</p>
+            <p>Merci de votre confiance</p>
+            <p>Pour toute question: 0123456789</p>
           </div>
         </div>
       </div>
