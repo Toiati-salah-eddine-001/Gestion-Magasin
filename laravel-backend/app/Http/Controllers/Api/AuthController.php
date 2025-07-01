@@ -75,6 +75,14 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
+        if (!$request->user()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Not authenticated',
+                'data' => null
+            ], 401);
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -83,6 +91,7 @@ class AuthController extends Controller
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                     'role' => $request->user()->role,
+                    'is_admin' => $request->user()->is_admin,
                 ]
             ]
         ]);

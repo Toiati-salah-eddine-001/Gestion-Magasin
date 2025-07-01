@@ -9,12 +9,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import usersApi from "@/lib/api/users";
+import { useRouter } from "next/navigation";
+import { authAPI } from "@/lib/api";
 
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    authAPI.getUser().then(res => {
+      if (res && res.data && res.data.user) {
+        setIsAdmin(res.data.user.is_admin);
+        if (!res.data.user.is_admin) {
+          router.replace("/Index");
+        }
+      }
+    });
+  }, [router]);
 
   // Fetch users from API
   const fetchUsers = async () => {
@@ -122,6 +137,16 @@ export default function Users() {
     }
   };
 
+  // Toggle user active status
+  const handleToggleStatus = async (userId) => {
+    try {
+      await usersApi.toggleStatus(userId);
+      fetchUsers();
+    } catch (error) {
+      console.error(error.message || "Failed to toggle user status");
+    }
+  };
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -226,40 +251,34 @@ export default function Users() {
             <TableHeader>
               <TableRow>
                 <TableHead>Nom d'utilisateur</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Rôle</TableHead>
-                <TableHead>Date d'inscription</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.filter(user => user.is_active !== false).map((user) => (
+              {users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
                   <TableCell>{user.role}</TableCell>
-                  <TableCell>{user.date}</TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleEdit(user.id)}
-                        title="Modifier l'utilisateur"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="icon" title="Réinitialiser le mot de passe">
-                        <Key className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleDelete(user.id)}
-                        title="Supprimer l'utilisateur"
-                        className="hover:bg-red-50 hover:text-red-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleToggleStatus(user.id)}
+                    >
+                      <Key className={user.is_active ? "text-green-600" : "text-red-600"} />
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(user.id)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleDelete(user.id)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

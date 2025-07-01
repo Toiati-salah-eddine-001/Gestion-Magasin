@@ -1,3 +1,4 @@
+'use client'
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -5,9 +6,26 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { authAPI } from "@/lib/api";
 
 export default function Settings() {
     // ________________this page about the print 
+  const [isAdmin, setIsAdmin] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    authAPI.getUser().then(res => {
+      if (res && res.data && res.data.user) {
+        setIsAdmin(res.data.user.is_admin);
+        if (!res.data.user.is_admin) {
+          router.replace("/Index");
+        }
+      }
+    });
+  }, [router]);
+
   return (
     <MainLayout>
       <div className="space-y-6">

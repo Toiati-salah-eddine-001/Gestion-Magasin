@@ -26,10 +26,10 @@ use Illuminate\Support\Facades\Gate;
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', [AuthController::class, 'user']);
+    Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::put('/password', [AuthController::class, 'changePassword']);
-});
+})->middleware('auth:sanctum');
 
 // Dashboard routes
 Route::prefix('dashboard')->group(function () {

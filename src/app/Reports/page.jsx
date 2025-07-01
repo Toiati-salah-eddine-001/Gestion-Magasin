@@ -6,9 +6,25 @@ import { BarChart3, PieChart } from "lucide-react";
 import SalesMonth from "./SalesMonth";
 import DateProduct from "./DateProduct";
 import PofitLosData from "./PofitLosdata";
-
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { authAPI } from "@/lib/api";
 
 export default function Reports() {
+  const [isAdmin, setIsAdmin] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    authAPI.getUser().then(res => {
+      if (res && res.data && res.data.user) {
+        setIsAdmin(res.data.user.is_admin);
+        if (!res.data.user.is_admin) {
+          router.replace("/Index");
+        }
+      }
+    });
+  }, [router]);
+
   return (
     <MainLayout>
       <div className="space-y-6">
